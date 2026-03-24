@@ -41,14 +41,26 @@ input:focus{
 button{
     width: 100%;
     padding: 10px;
-    background-color: #007bff;
-    color: white;
+    /*background-color: #007bff;
+    color: white;*/
     border: none;
     border-radius: 5px;
     transition: 0.3s;
 }
-button:hover{
+.sign-in{
+    background-color: #007bff;
+    color: white;
+}
+button.sign-in:hover{
     background-color: #0056b3;
+}
+.sign-up{
+    margin-top: 10px;
+    background-color: #3DA13A;
+    color: white;
+}
+button.sign-up:hover{
+    background-color: #297A28;
 }
 .forgot{
     text-align: right;
