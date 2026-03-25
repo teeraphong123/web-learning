@@ -1,0 +1,11 @@
+* {
+    box-sizing: border-box;
+}
+body{
+    font-family: Arial;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #358DFC;
+}

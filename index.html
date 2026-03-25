@@ -19,6 +19,11 @@
         <p class="forgot">Forgot password?</p>
     </form>
     <script src="script.js"></script>
+    <script>
+        if(localStorage.getItem("username")){
+            window.location.href = "dashboard.html";
+        }
+    </script>
 </body>
 
 </html>
