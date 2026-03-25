@@ -10,6 +10,10 @@ document.querySelector("button").addEventListener("click", function (event) {
     usernameError.textContent = "";
     passwordError.textContent = "";
 
+    // Error ถ้า Email  ไม่กรอก @
+    /* if(!email.includes("@")) {
+    emailError.textContent = "Email ไม่ถูกต้อง";
+    } */
     if(username === ""){
         usernameError.textContent = "กรุณากรอก Username";
         document.getElementById("username").style.borderColor = 'red';
