@@ -1,18 +1,24 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>My First Web</title>
-        <link rel="stylesheet" href="style.css">
-    </head>
-    <body>
-        <form>
-            <h2>Login</h2>
-            <p> Income and Expense Account</p>
-            <input type="text" placeholder="Username"><br><br>
-            <input type="password" placeholder="Password"><br><br>
-            <button class="sign-in">Sign In</button>
-            <button class="sign-up">Sign Up</button>
-            <p class="forgot">Forgot password?</p>
-        </form>
-    </body>
+
+<head>
+    <title>My First Web</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <form>
+        <h2>Login</h2>
+        <p> Income and Expense Account</p>
+        <input type="text" id="username" placeholder="Username">
+        <small id="usernameError"></small>
+        <input type="password" id="password" placeholder="Password">
+        <small id="passwordError"></small>
+        <button class="sign-in">Sign In</button>
+        <!-- <button class="sign-up">Sign Up</button> -->
+        <p class="forgot">Forgot password?</p>
+    </form>
+    <script src="script.js"></script>
+</body>
+
 </html>
