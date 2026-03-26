@@ -1,11 +1,54 @@
-* {
+*{
     box-sizing: border-box;
 }
 body{
     font-family: Arial;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
     background-color: #358DFC;
+}
+.title{
+    display: flex;
+    justify-content: space-between;/* ดัยซ้าย-ขวา*/
+    align-items: center;
+    padding: 10px;
+}
+.right{
+    display: flex;
+    align-items: center;
+    gap: 50px;
+}
+#welcome{
+    white-space: nowrap; /*ให้อยู่ในบรรทัดเดียวกัน*/
+    font-weight: 500;
+    font-size: 20px;
+}
+#logout{
+    background-color: #ec0707;
+    color: white;
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    transition: 0.3s;
+}
+.content{
+    padding: 10px;
+}
+#loading{
+    height: 100%;
+    width: 100%;
+    justify-content: center;
+    text-align: center;
+    font-size: 18px;
+    margin: 20px;
+    font-weight: bold;
+    animation: blink 1s infinite;
+}
+@keyframes blink {
+    50% { opacity: 0.3; }
+}
+#posts div{
+    background: white;
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 5px;
 }

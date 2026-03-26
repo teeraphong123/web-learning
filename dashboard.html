@@ -7,9 +7,17 @@
     <link rel="stylesheet" href="css/dashboard.css">
 </head>
 <body>
-    <h1>Welcome to Dashboard</h1><br><br>
-    <h1 id="welcome"></h1>
-    <button id="logout" onclick="logout()">Logout</button>
+    <div class="title">
+        <h1>Welcome to Dashboard</h1>
+        <div class="right">
+            <span id="welcome"></span>
+            <button id="logout" onclick="logout()">Logout</button>
+        </div>
+    </div>
+    <div id="content" class="content">
+        <div id="loading"></div>
+        <div id="posts"></div>
+    </div>
     <script src="js/dashboard.js"></script>
 </body>
 </html>
