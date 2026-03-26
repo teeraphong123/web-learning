@@ -4,6 +4,7 @@
 body{
     font-family: Arial;
     background-color: #358DFC;
+    padding: 10px;
 }
 .title{
     display: flex;
@@ -29,9 +30,6 @@ body{
     border: none;
     border-radius: 5px;
     transition: 0.3s;
-}
-.content{
-    padding: 10px;
 }
 #loading{
     height: 100%;
