@@ -50,3 +50,29 @@ body{
     margin: 10px 0;
     border-radius: 5px;
 }
+.contentAdd{
+    display: block;
+}
+.contentAdd #title{
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+.contentAdd #body{
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+.contentAdd #addData{
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: none;
+    border-radius: 5px;
+    background-color: green;
+    color: white;
+}

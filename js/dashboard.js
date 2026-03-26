@@ -29,9 +29,25 @@ fetch("https://jsonplaceholder.typicode.com/posts")
  */
 // function POST
     function addPost(){
-        let title = document.getElementById("title").value;
-        let body = document.getElementById("body").value;
-        if(!title == "" && !body == ""){
+        let titleInput = document.getElementById("title");
+        let bodyInput = document.getElementById("body");
+        let addButton = document.getElementById("addData");
+        let postLoading = document.getElementById("postLoading");
+
+        let title = titleInput.value;
+        let body = bodyInput.value;
+
+        //เช็คค่าว่างของ Input Title Body
+        if(title == "" || body == ""){
+            alert("กรุณากรอกข้อมูลให้ครบ");
+            titleInput.value = "";
+            bodyInput.value = "";
+            titleInput.focus();
+            return;
+        }
+        // เริ่ม Loading ของ การเพิ่มข้อมูล
+        postLoading.style.display = "block";
+        addButton.disabled = true;
         fetch("https://jsonplaceholder.typicode.com/posts",{
             method: "POST",
             headers: {
@@ -44,25 +60,28 @@ fetch("https://jsonplaceholder.typicode.com/posts")
         })
         .then(res => res.json())
         .then(data => {
+            // ซ่อน postLoading
+            postLoading.style.display = "none";
+            addButton.disabled = false;
+
             let container = document.getElementById("posts");
             let div = document.createElement("div");
             div.innerHTML = `<h3>${data.title}</h3><p>${data.body}</p>`;
             container.prepend(div);
             alert("เพิ่มข้อมูลสำเร็จ!");
             //เคลี่ยค่า Input
-            document.getElementById("title").value = "";
-            document.getElementById("body").value = "";
+            titleInput.value = "";
+            bodyInput.value = "";
             //ให้เพิ่มไปยัง title (Focus)
-            document.getElementById("title").focus();
+            titleInput.focus();
             console.log(data);
         })
         .catch(err => {
+            postLoading.style.display = "none";
+            addButton.disabled = false;
             alert("เกิดข้อผิดพลาด");
             console.error(err);
         });
-    }else{
-        alert("กรุณากรอกข้อมูล");
-    }
     }
 // ชื่อของผู้ใช้งาน
     let user = localStorage.getItem("username");

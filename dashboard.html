@@ -14,16 +14,17 @@
             <button id="logout" onclick="logout()">Logout</button>
         </div>
     </div>
-    <div id="content" class="content">
+    
+    <div class="contentAdd" id="contentAdd" >
+        <div id="postLoading" style="display: none;">กำลังเพิ่มข้อมูล...</div>
+        <h2 class="headPost" id="headPost">Add Post</h2>
+        <input type="text" id="title" placeholder="หัวข้อ">
+        <textarea id="body" placeholder="เนื้อหา"></textarea>
+        <button id="addData" onclick="addPost()">เพิ่มข้อมูล</button>
+    </div>
+    <div id="contentData" class="contentData">
         <div id="loading"></div>
         <div id="posts"></div>
-    </div>
-    <div class="postLoading" id="postLoading" style="display: none;">
-        กำลังเพิ่มข้อมูล
-        <h2 class="headPost" id="headPost">Add Post</h2>
-        <input type="text" id="title" placeholder="Title">
-        <textarea id="body" placeholder="Content"></textarea>
-        <button onclick="addPost()">Add</button>
     </div>
     <script src="js/dashboard.js"></script>
 </body>

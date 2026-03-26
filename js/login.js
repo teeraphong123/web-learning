@@ -37,6 +37,3 @@ let button = document.querySelector("button");
         logoutButton.textContent = "Logout";
         window.location.href = "index.html";
     }
-    // ชื่อของผู้ใช้งาน
-    let user = localStorage.getItem("username");
-    document.getElementById("welcome").textContent = "Welcome: "+ user;
