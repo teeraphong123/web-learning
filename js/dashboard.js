@@ -1,6 +1,6 @@
 // หากไม่มี ข้อมูลเด้งกลับหน้า Login
 if(!localStorage.getItem("username")){
-    window.href.href = "index.html";
+    window.location.href = "index.html";
 }
 // ชื่อของผู้ใช้งาน
     let user = localStorage.getItem("username");
