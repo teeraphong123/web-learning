@@ -2,6 +2,15 @@
 if(!localStorage.getItem("username")){
     window.location.href = "index.html";
 }
+// ชื่อของผู้ใช้งาน
+    let user = localStorage.getItem("username");
+    document.getElementById("welcome").textContent = "Welcome: "+ user;
+
+// Logout
+function logout(){
+    localStorage.clear();
+    window.location.href = "index.html";
+}
 // Fake API and Loading
 /* let loading = document.getElementById("loading");
 let container = document.getElementById("posts");
@@ -27,7 +36,7 @@ fetch("https://jsonplaceholder.typicode.com/posts")
             console.error(error);//debug
     });
  */
-// function POST
+    // function  เพิ่มข้อมูล POST
     function addPost(){
         let titleInput = document.getElementById("title");
         let bodyInput = document.getElementById("body");
@@ -66,7 +75,13 @@ fetch("https://jsonplaceholder.typicode.com/posts")
 
             let container = document.getElementById("posts");
             let div = document.createElement("div");
-            div.innerHTML = `<h3>${data.title}</h3><p>${data.body}</p>`;
+            div.innerHTML = 
+            `<h3>${data.title}</h3>
+            <p>${data.body}</p>
+            <div id="deButton" class="deButton">
+            <button id="editButton" onclick="editPost(this)">Edit</button>
+            <button id="deleteButton" onclick="deletePost(this)">Delete</button>
+            </div>`;
             container.prepend(div);
             alert("เพิ่มข้อมูลสำเร็จ!");
             //เคลี่ยค่า Input
@@ -83,12 +98,23 @@ fetch("https://jsonplaceholder.typicode.com/posts")
             console.error(err);
         });
     }
-// ชื่อของผู้ใช้งาน
-    let user = localStorage.getItem("username");
-    document.getElementById("welcome").textContent = "Welcome: "+ user;
+    // Function editPost
+    function editPost(button){
+        let div = button.parentElement;
 
-// Logout
-function logout(){
-    localStorage.clear();
-    window.location.href = "index.html";
-}
+        let title = div.querySelector("h3").textContent;
+        let body = div.querySelector("p").textContent;
+
+        document.getElementById("title").value = title;
+        document.getElementById("body").value = body;
+
+        div.remove();//ลบของเก่า
+    }
+    // Function ลบข้อมูล POST
+    function deletePost(button){
+        if(confirm("ต้องการลบใช่ไหม?")){
+            button.parentElement.remove();
+        }
+        /* let div = button.parentElement;
+        div.remove(); */
+    }
