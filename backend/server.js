@@ -1,33 +1,40 @@
 const express = require("express");
-const cors = require("cors");
+const { MongoClient } = require("mongodb");
 
 const app = express();
-
-app.use(cors());
-
 app.use(express.json()); //รับ JSON
 
-// test route
-app.get("/",(req, res) => {
-    res.send("Sever ทำงานแล้ว");
-});
+// Connection URL
+const url = "mongodb://127.0.0.1:27017";
+const client = new MongoClient(url);
 
-app.listen(3000,() => {
-    console.log("Sever running on port 3000");
-});
+// Database
+let db;
+// 🚀 START SERVER หลัง connect DB
+async function startServer() {
+    await client.connect();
+    console.log("Connected to MongoDB");
+    db = client.db("myApp"); // ใช้ DB เดียวกับที่คุณสร้าง
 
-app.get("/posts", (req, res) => {
-    res.json([
-        { id: 1, title: "Post 1"},
-        { id: 2, title: "Post 2"}
-    ]);
+    app.listen(3000, () => {
+        console.log("🚀 Server running on port 3000");
+    });
+}
+
+
+startServer();
+// ✅ GET: ดึงข้อมูล
+app.get("/products",async (req, res) => {
+    const data = await db.collection("products").find().toArray();
+    res.send(data);
 });
-app.get("/posts", (req, res) => {
+// ✅ POST: เพิ่มข้อมูล
+app.post("/products", async (req, res) => {
     const data = req.body;
-    console.log(data);
+    const result = await db.collection("products").insertOne(data);
 
-    res.json({
+    res.send({
         message: "เพิ่มข้อมูลสำเร็จ",
-        data: data
+        result: result
     });
 });
