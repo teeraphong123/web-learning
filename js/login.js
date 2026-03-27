@@ -8,32 +8,32 @@ let button = document.querySelector("button");
     // 2. event
     button.addEventListener("click",function(event){
         event.preventDefault();
+        let users = JSON.parse(localStorage.getItem("users")) || []
+
         let username = document.getElementById("username").value;
         let password = document.getElementById("password").value;
-
-        let saveUsername = localStorage.getItem("username");
-        let savePassword = localStorage.getItem("password");
-
+    
+    let foundUser = users.find(u => u.username === username);
     // 3. Main Logic
-    if(!saveUsername){
+    if(!foundUser){
         //Register
-        localStorage.setItem("username",username);
-        localStorage.setItem("password",password);
-        alert("Sign up Successfully!");
+        users.push({
+            username: username,
+            password: password
+        });
+        localStorage.setItem("users",JSON.stringify(users));
+        alert("สมัครสำเร็จ!"); 
         button.textContent = 'Sign In';
     }else{
         //Login
-        if(username === saveUsername && password === savePassword){
-            window.location.href = "dashboard.html"
+        if(foundUser.password == password){
+            // สำเร็จ
+            alert("Login สำเร็จ!");
+            localStorage.setItem("currentUser",username);
+            window.location.href = "dashboard.html";
         }else{
-            alert("Username หรือ Password ไม่ถูกต้อง")
+            //ไม่สำเร็จ
+            alert("Password ไม่ถูกต้อง");
         }
     }
-    });
-    function logout(){
-        localStorage.clear();
-        alert("Logout Successfully!");
-        let logoutButton = document.getElementById("logout").value;
-        logoutButton.textContent = "Logout";
-        window.location.href = "index.html";
-    }
+});
