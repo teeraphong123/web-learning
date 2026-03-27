@@ -1,4 +1,7 @@
 // หากไม่มี ข้อมูลเด้งกลับหน้า Login
+
+
+
 /* if(!localStorage.getItem("username")){
     window.location.href = "index.html";
 } */
@@ -36,7 +39,7 @@ function logout(){
         // เริ่ม Loading ของ การเพิ่มข้อมูล
         postLoading.style.display = "block";
         addButton.disabled = true;
-        fetch("https://jsonplaceholder.typicode.com/posts",{
+        /* fetch("https://jsonplaceholder.typicode.com/posts",{
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -75,7 +78,10 @@ function logout(){
             addButton.disabled = false;
             alert("เกิดข้อผิดพลาด");
             console.error(err);
-        });
+        }); */
+        fetch("http://localhost:3000/posts")
+            .then(res => res.json())
+            .then(data => console.log(data));
     }
     // Function editPost
     function editPost(button){
