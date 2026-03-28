@@ -1,5 +1,5 @@
 const express = require("express");
-const { MongoClient } = require("mongodb");
+const { MongoClient, ObjectId } = require("mongodb");
 
 const app = express();
 app.use(express.json()); //รับ JSON
@@ -31,7 +31,7 @@ app.get("/products",async (req, res) => {
 // ✅ POST: เพิ่มข้อมูล
 app.post("/products", async (req, res) => {
     console.log(req.body);
-    
+
     const data = req.body;
     const result = await db.collection("products").insertOne(data);
 
@@ -39,4 +39,50 @@ app.post("/products", async (req, res) => {
         message: "เพิ่มข้อมูลสำเร็จ",
         result: result
     });
+});
+
+// UPDATE ( PUT )
+app.put('/products/:id', async (req, res) => {
+    try {
+        const id = req.params.id;
+        const updateData = req.body;
+
+        const result = await db.collection("products").updateOne(
+            { _id: new ObjectId(id) },
+            { $set: updateData }
+        );
+
+        if (result.matchedCount === 0) {
+            return res.status(404).json({ message: "Product not found" });
+        }
+
+        res.json({
+            message: "อัปเดตสำเร็จ",
+            result: result
+        });
+
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+// DELETE
+app.delete('/products/:id', async (req, res) => {
+    try{
+        const id = req.params.id;
+
+        const result = await db.collection("products").deleteOne({
+            _id: new ObjectId(id)
+        });
+
+        if(result.deleteCount === 0){
+            return res.status(404).json({ message: "Product not found"});
+        }
+
+        res.json({
+            message: "ลบสำเร็จ",
+            result: result
+        });
+    }catch(error){
+        res.status(500).json({ error: error.message});
+    }
 });
