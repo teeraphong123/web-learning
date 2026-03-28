@@ -30,6 +30,8 @@ app.get("/products",async (req, res) => {
 });
 // ✅ POST: เพิ่มข้อมูล
 app.post("/products", async (req, res) => {
+    console.log(req.body);
+    
     const data = req.body;
     const result = await db.collection("products").insertOne(data);
 
