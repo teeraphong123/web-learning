@@ -1,5 +1,7 @@
 const express = require("express");
 const { MongoClient, ObjectId } = require("mongodb");
+const productRoutes = require("./routes/products");
+app.use("/products", productRoutes(db));
 
 const app = express();
 app.use(express.json()); //รับ JSON
@@ -30,59 +32,133 @@ app.get("/products",async (req, res) => {
 });
 // ✅ POST: เพิ่มข้อมูล
 app.post("/products", async (req, res) => {
-    console.log(req.body);
+    try{
+        console.log(req.body);
+        let {name, price} = req.body;
 
-    const data = req.body;
-    const result = await db.collection("products").insertOne(data);
+        // Validation
+        if (!name || !price){
+        return res.status(400).json({
+            sucess: false,
+            message: "กรุณากรอก name"
+        });
+        }
 
-    res.send({
-        message: "เพิ่มข้อมูลสำเร็จ",
-        result: result
-    });
+        // Check ข้อมูลของราคาต้องเป็นตัวเลข
+        if(typeof price !== "number"){
+            return res.status(400).json({
+                sucess: false,
+                message: "price ต้องเป็นตัวเลข"
+            });
+        }
+        const result = await db.collection("products").insertOne({
+            name,
+            price
+        });
+
+        res.json({
+            sucess: true,
+            message: "เพิ่มข้อมูลสำเร็จ",
+            result
+        });
+    } catch (err){
+        res.status(500).json({
+            sucess: false,
+            message: "เกิดข้อผิดพลาด",
+            error: err.message
+        });
+    }
 });
 
 // UPDATE ( PUT )
+const { ObjectId} = require("mongodb");
+const { Suspense } = require("react");
 app.put('/products/:id', async (req, res) => {
     try {
         const id = req.params.id;
-        const updateData = req.body;
+        const {name, price} = req.body;
 
+        // check id
+        if (!ObjectId.isValid(id)){
+            return res.status(400).json({
+                sucess: false,
+                message: "ID ไม่ถูกต้อง"
+            });
+        }
+        // Validate
+
+        if(!name || !price){
+            return res.status(400).json({
+                sucess: false,
+                message: "กรุณากรอก name และ price"
+            });
+        }
+        // Check DataType Price
+        if (typeof price !== "number"){
+            return res.status(400).json({
+                sucess: false,
+                message: "price ต้องเป็นตัวเลข"
+            });
+        }
         const result = await db.collection("products").updateOne(
             { _id: new ObjectId(id) },
-            { $set: updateData }
+            { $set: { name, price} }
         );
-
+        // Check ว่ามีข้อมูลไหม
         if (result.matchedCount === 0) {
-            return res.status(404).json({ message: "Product not found" });
+            return res.status(404).json({ 
+                sucess: false,
+                message: "Product not found" 
+            });
         }
-
         res.json({
+            sucess: true,
             message: "อัปเดตสำเร็จ",
             result: result
         });
 
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(500).json({ 
+            sucess: false,
+            error: error.message 
+        });
     }
 });
 // DELETE
+
 app.delete('/products/:id', async (req, res) => {
     try{
         const id = req.params.id;
 
+        // Check id
+        if(!ObjectId.isValid(id)){
+            return res.status(400).json({
+                sucess: false,
+                message: "ID ไม่ถูกต้อง"
+            });
+        }
+
         const result = await db.collection("products").deleteOne({
             _id: new ObjectId(id)
         });
-
+        // Check ว่าลบได้ไหม
         if(result.deleteCount === 0){
-            return res.status(404).json({ message: "Product not found"});
+            return res.status(404).json({
+                sucess: false, 
+                message: "ไม่พบข้อมูล"
+            });
         }
 
         res.json({
+            sucess: true,
             message: "ลบสำเร็จ",
-            result: result
+            result
         });
-    }catch(error){
-        res.status(500).json({ error: error.message});
+    }catch(err){
+        res.status(500).json({ 
+            sucess: false,
+            message: "Error",
+            error: error.message
+        });
     }
 });
