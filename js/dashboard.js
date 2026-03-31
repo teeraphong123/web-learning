@@ -1,10 +1,4 @@
 // หากไม่มี ข้อมูลเด้งกลับหน้า Login
-
-
-
-/* if(!localStorage.getItem("username")){
-    window.location.href = "index.html";
-} */
 if(!localStorage.getItem("currentUser")){
     window.location.href = "index.html";
 }
@@ -17,7 +11,6 @@ function logout(){
     localStorage.removeItem("currentUser");
     window.location.href = "index.html";
 }
-
     // function  เพิ่มข้อมูล POST
     function addPost(){
         let titleInput = document.getElementById("title");
@@ -39,46 +32,6 @@ function logout(){
         // เริ่ม Loading ของ การเพิ่มข้อมูล
         postLoading.style.display = "block";
         addButton.disabled = true;
-        /* fetch("https://jsonplaceholder.typicode.com/posts",{
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                title: title,
-                body: body
-            })
-        })
-        .then(res => res.json())
-        .then(data => {
-            // ซ่อน postLoading
-            postLoading.style.display = "none";
-            addButton.disabled = false;
-
-            let container = document.getElementById("posts");
-            let div = document.createElement("div");
-            div.innerHTML = 
-            `<h3>${data.title}</h3>
-            <p>${data.body}</p>
-            <div id="deButton" class="deButton">
-            <button id="editButton" onclick="editPost(this)">Edit</button>
-            <button id="deleteButton" onclick="deletePost(this)">Delete</button>
-            </div>`;
-            container.prepend(div);
-            alert("เพิ่มข้อมูลสำเร็จ!");
-            //เคลี่ยค่า Input
-            titleInput.value = "";
-            bodyInput.value = "";
-            //ให้เพิ่มไปยัง title (Focus)
-            titleInput.focus();
-            console.log(data);
-        })
-        .catch(err => {
-            postLoading.style.display = "none";
-            addButton.disabled = false;
-            alert("เกิดข้อผิดพลาด");
-            console.error(err);
-        }); */
         fetch("http://localhost:3000/posts")
             .then(res => res.json())
             .then(data => console.log(data));

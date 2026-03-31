@@ -1,7 +1,9 @@
 const express = require("express");
 const { MongoClient, ObjectId } = require("mongodb");
 const productRoutes = require("./routes/products");
-app.use("/products", productRoutes(db));
+const authRouters = require("./routes/auth"); 
+const authMiddleware = require("./middleware/auth");
+
 
 const app = express();
 app.use(express.json()); //รับ JSON
@@ -16,19 +18,29 @@ let db;
 async function startServer() {
     await client.connect();
     console.log("Connected to MongoDB");
+
     db = client.db("myApp"); // ใช้ DB เดียวกับที่คุณสร้าง
+    app.use("/products", productRoutes(db));
+    app.use("/auth", authRouters(db));
 
     app.listen(3000, () => {
         console.log("🚀 Server running on port 3000");
     });
 }
 
-
 startServer();
 // ✅ GET: ดึงข้อมูล
 app.get("/products",async (req, res) => {
     const data = await db.collection("products").find().toArray();
     res.send(data);
+});
+//  ป้องกัน API
+app.get("/profile", authMiddleware, async (req, res) => {
+    const user = await db.collection("users").findOne(
+        {_id: new ObjectId(req.user.userId)},
+        { projection: { password: 0}} // ❌ ไม่เอา password
+    );
+    res.json(user);
 });
 // ✅ POST: เพิ่มข้อมูล
 app.post("/products", async (req, res) => {
@@ -71,8 +83,7 @@ app.post("/products", async (req, res) => {
 });
 
 // UPDATE ( PUT )
-const { ObjectId} = require("mongodb");
-const { Suspense } = require("react");
+//const { Suspense } = require("react");
 app.put('/products/:id', async (req, res) => {
     try {
         const id = req.params.id;
@@ -142,7 +153,7 @@ app.delete('/products/:id', async (req, res) => {
             _id: new ObjectId(id)
         });
         // Check ว่าลบได้ไหม
-        if(result.deleteCount === 0){
+        if(result.deletedCount === 0){
             return res.status(404).json({
                 sucess: false, 
                 message: "ไม่พบข้อมูล"
@@ -154,7 +165,7 @@ app.delete('/products/:id', async (req, res) => {
             message: "ลบสำเร็จ",
             result
         });
-    }catch(err){
+    }catch(error){
         res.status(500).json({ 
             sucess: false,
             message: "Error",
