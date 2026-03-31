@@ -1,28 +1,23 @@
 const jwt = require("jsonwebtoken");
+const { ACCESS_SECRET } = require("../utils/token");
 
-module.exports = (req, res, next) => {
+function authMiddleware(req, res, next) {
+    const authHeader = req.headers.authorization;
+
+    if (!authHeader){
+        return res.sendStatus(401);
+    }
+
+    const token = authHeader.split(" ")[1];
+
     try{
-        const authHeader = req.headers.authorization;
-
-        if (!authHeader){
-            return res.status(401).json({
-                success: false,
-                message: "ไม่มี token"
-            });
-        }
-
-        const token = authHeader.split(" ")[1];
-        const decode = jwt.verify(token, "mysecretkey");
-
-        req.user = decode; //{ userId: ...}
-
+        const decode = jwt.verify(token, ACCESS_SECRET);
+        req.user = decode;
         next();
-        
-    }catch(error){
-        return res.status(401).json({
-            success: false,
-            message: "token ไม่ถูกต้อง",
-            error: error.message
-        });
+    }catch (error){
+        console.log("JWT ERROR:", error.message); // 👈 เพิ่มบรรทัดนี้
+        return res.sendStatus(403);
     }
 }
+
+module.exports = authMiddleware;

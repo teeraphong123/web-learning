@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+</head>
+<body>
+    <h2>Login</h2>
+    <input type="email"  id="email" placeholder="Email"><br><br>
+    <input type="password" id="password" placeholder="Password">
+
+    <button onclick="login()">Login</button>
+    <button onclick="getProfile()">Get Profile</button>
+    <script>
+        async function login() {
+            const email = document.getElementById("email").value;
+            const password = document.getElementById("password").value;
+
+            const res = await fetch("http://localhost:3000/auth/login",{
+                method: "POST",
+                headers: {
+                    "content-Type": "application/json"
+                },
+                body: JSON.stringify({ email, password})
+            });
+
+            const data = await res.json();
+            console.log(data);
+
+            if (data.accessToken){
+                // เก็บ Token
+                localStorage.setItem("accessToken", data.accessToken);
+                localStorage.setItem("refreshToken", data.refreshToken)
+
+                alert("Login สำเร็จ!");
+            }else {
+                alert("Login ไม่สำเร็จ!");
+            }
+        }
+        async function getProfile() {
+            let token = localStorage.getItem("accessToken");
+            console.log("TOKEN: ", token); // 👈 ดูก่อน
+            const res = await fetch("http://localhost:3000/profile",{
+                headers: {
+                    "Authorization": "Bearer " + token
+                }
+            });
+
+            if (res.status === 403){
+                // 🔥 token หมดอายุ → refresh
+                token = await refreshToken();
+
+                res = await fetch("http://localhost:3000/profile",{
+                    headers: {
+                        "Authorization": "Bearer " + token
+                    }
+                });
+            }
+            console.log("STATUS:", res.status); // 👈 ดู status
+            const data = await res.json();
+            console.log(data);
+            alert(JSON.stringify(data));
+        }
+        async function refreshToken(){
+            const refreshToken = localStorage.getItem("refreshToken");
+
+            const res = await fetch("http://localhost:3000/auth/refresh",{
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ refreshToken})
+            });
+            const data = await res.json();
+
+            if (data.accessToken){
+                localStorage.setItem("accessToken", data.accessToken);
+                return data.accessToken;
+            } else {
+                alert("Session หมดอายุ กรุณา Login ใหม่");
+            }
+        } 
+    </script>
+</body>
+</html>

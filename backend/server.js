@@ -1,12 +1,16 @@
 const express = require("express");
+const cors = require("cors");
 const { MongoClient, ObjectId } = require("mongodb");
 const productRoutes = require("./routes/products");
 const authRouters = require("./routes/auth"); 
 const authMiddleware = require("./middleware/auth");
 
 
+
 const app = express();
+app.use(cors());
 app.use(express.json()); //รับ JSON
+
 
 // Connection URL
 const url = "mongodb://127.0.0.1:27017";
@@ -36,11 +40,47 @@ app.get("/products",async (req, res) => {
 });
 //  ป้องกัน API
 app.get("/profile", authMiddleware, async (req, res) => {
-    const user = await db.collection("users").findOne(
-        {_id: new ObjectId(req.user.userId)},
-        { projection: { password: 0}} // ❌ ไม่เอา password
-    );
-    res.json(user);
+    
+    try{
+        console.log("User From TOKEN: ",req.user);// Debug
+        
+        if (!req.user || !req.user.userId){
+            return res.status(401).json({
+                sucess: false,
+                message: "Token ไม่ถูกต้อง"
+            });
+        }
+
+        // 🔥 เช็คก่อนว่าเป็น ObjectId ไหม
+        if (!ObjectId.isValid(req.user.userId)) {
+            return res.status(400).json({
+                success: false,
+                message: "Invalid userId"
+            });
+        }
+
+
+        const user = await db.collection("users").findOne(
+            {_id: new ObjectId(req.user.userId)},
+            { projection: { password: 0,  refreshToken: 0 }} // ❌ ไม่เอา password
+        );
+        if(!user){
+            return res.status(404).json({
+                sucess: false,
+                message: "ไม่พบข้อมูลผู้ใช้"
+            });
+        }
+
+        res.json(user);
+        
+    }catch (error){
+        console.log("PROFILE ERROR:", error.message); // 👈 debug
+        return res.status(500).json({
+            sucess: false,
+            message: "เกิดข้อผิดพลาด",
+            error: error.message
+        });
+    }
 });
 // ✅ POST: เพิ่มข้อมูล
 app.post("/products", async (req, res) => {
@@ -73,11 +113,11 @@ app.post("/products", async (req, res) => {
             message: "เพิ่มข้อมูลสำเร็จ",
             result
         });
-    } catch (err){
+    } catch (error){
         res.status(500).json({
             sucess: false,
             message: "เกิดข้อผิดพลาด",
-            error: err.message
+            error: error.message
         });
     }
 });
