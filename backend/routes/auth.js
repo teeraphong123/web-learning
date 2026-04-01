@@ -4,6 +4,8 @@ const jwt = require("jsonwebtoken");
 const { generateAccessToken, generateRefreshToken} = require("../utils/token");
 const { REFRESH_SECRET} = require("../utils/token");
 const { ObjectId } = require("mongodb");
+const authMiddleware = require("../middleware/auth");
+const authorizeRole = require("../middleware/role");
 
 const router = express.Router();
 
@@ -11,7 +13,7 @@ module.exports = (db) => {
     // REGISTER
     router.post("/register", async (req, res) => {
         try{
-            const {email, password} = req.body;
+            const {email, password, role} = req.body;
 
             //1. Validate
             if (!email || !password){
@@ -33,11 +35,14 @@ module.exports = (db) => {
             //3. hash password เข้ารหัส password
             const hashPassword = await bcrypt.hash(password,10);
 
-            //4. Save ลง Database
-            await db.collection("users").insertOne({
+            const user = {
                 email,
                 password: hashPassword,
-            });
+                role: role || "user" //default = user
+            }
+
+            //4. Save ลง Database
+            await db.collection("users").insertOne(user);
 
             res.json({
                 success: true,
@@ -161,6 +166,11 @@ module.exports = (db) => {
             success: true,
             message: "Logged out"
         });
+    });
+    
+    // Admin เท่านั้น
+    router.post("/product",authMiddleware, authorizeRole("admin"), async (req,res) => {
+        res.json({ message: "Product created"});
     });
     return router;
 };

@@ -1,13 +1,16 @@
 const jwt = require("jsonwebtoken");
 
+
 const ACCESS_SECRET = "access_secret";
 const REFRESH_SECRET = "refresh_secret";
 
 function generateAccessToken(user){
     return jwt.sign(
-        { userId: user._id},
-        ACCESS_SECRET,
-        {expiresIn: "15m"}
+        { 
+            userId: user._id,
+            role: user.role},
+            ACCESS_SECRET,
+            {expiresIn: "15m"}
     );
 }
 

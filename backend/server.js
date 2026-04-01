@@ -7,6 +7,7 @@ const authMiddleware = require("./middleware/auth");
 
 
 
+
 const app = express();
 app.use(cors());
 app.use(express.json()); //รับ JSON
@@ -34,9 +35,14 @@ async function startServer() {
 
 startServer();
 // ✅ GET: ดึงข้อมูล
-app.get("/products",async (req, res) => {
-    const data = await db.collection("products").find().toArray();
-    res.send(data);
+
+app.get("/products", authMiddleware, async (req, res) => {
+    /* const data = await db.collection("products").find().toArray();
+    res.send(data); */
+    res.json({
+        userId: req.user.userId,
+        role: req.user.role
+    });
 });
 //  ป้องกัน API
 app.get("/profile", authMiddleware, async (req, res) => {
@@ -61,6 +67,7 @@ app.get("/profile", authMiddleware, async (req, res) => {
 
 
         const user = await db.collection("users").findOne(
+
             {_id: new ObjectId(req.user.userId)},
             { projection: { password: 0,  refreshToken: 0 }} // ❌ ไม่เอา password
         );
@@ -71,7 +78,11 @@ app.get("/profile", authMiddleware, async (req, res) => {
             });
         }
 
-        res.json(user);
+        res.json({
+            userId: user._id,
+            email: user.email,
+            role: user.role
+        });
         
     }catch (error){
         console.log("PROFILE ERROR:", error.message); // 👈 debug
@@ -83,6 +94,8 @@ app.get("/profile", authMiddleware, async (req, res) => {
     }
 });
 // ✅ POST: เพิ่มข้อมูล
+// Admin เท่านั้น
+
 app.post("/products", async (req, res) => {
     try{
         console.log(req.body);
